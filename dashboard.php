@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['pgasoid']==0)) {
+if (strlen($_SESSION['pgasaid']==0)) {
   header('location:logout.php');
   } 
      ?>
@@ -14,6 +14,7 @@ if (strlen($_SESSION['pgasoid']==0)) {
 <link rel="stylesheet" href="css/bootstrap.min.css" >
 <link href="css/style.css" rel='stylesheet' type='text/css' />
 <link href="css/style-responsive.css" rel="stylesheet"/>
+
 <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 
 <link rel="stylesheet" href="css/font.css" type="text/css"/>
@@ -21,7 +22,6 @@ if (strlen($_SESSION['pgasoid']==0)) {
 <link rel="stylesheet" href="css/morris.css" type="text/css"/>
 
 <link rel="stylesheet" href="css/monthly.css">
-
 <script src="js/jquery2.0.3.min.js"></script>
 <script src="js/raphael-min.js"></script>
 <script src="js/morris.js"></script>
@@ -30,70 +30,86 @@ if (strlen($_SESSION['pgasoid']==0)) {
 <section id="container">
 <?php include_once('includes/header.php');?>
 <?php include_once('includes/sidebar.php');?>
+
 <section id="main-content">
 	<section class="wrapper">
 		<div class="market-updates">
-			<div class="col-md-4 market-update-gd">
-				<div class="market-update-block clr-block-3">
+			<div class="col-md-3 market-update-gd">
+				<div class="market-update-block clr-block-2">
 					<div class="col-md-4 market-update-right">
-						<i class="icon-food fa-3x"> </i>
+						<i class="fa fa-globe"> </i>
 					</div>
-					
-					<?php 
-$donarid=$_SESSION['pgasoid'];
-					$query=mysqli_query($con,"Select * from  tblfood where DonorID='$donarid'");
-$fcounts=mysqli_num_rows($query);
+					<?php $query1=mysqli_query($con,"Select * from  tblstate");
+$statecounts=mysqli_num_rows($query1);
 ?>
 					 <div class="col-md-8 market-update-left">
-					 <a href="manage-food-details.php"><h4>Total Listed Food</h4></a>
-					<h3><?php echo $fcounts;?></h3>
+					 	
+					 <h4><a href="manage-state.php" style="color: white">Total State</a></h4>
+					<h3><?php echo $statecounts;?></h3>
 					
 				  </div>
 				  <div class="clearfix"> </div>
 				</div>
 			</div>
-			<?php 
-					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId 
- where tblfood.DonorID='$donarid' and (tblfoodrequests.status='Food Take Away/ Request Completed')");
-$completed=mysqli_num_rows($query);
-?>
-			<div class="col-md-4 market-update-gd">
+			<div class="col-md-3 market-update-gd">
 				<div class="market-update-block clr-block-1">
 					<div class="col-md-4 market-update-right">
-						<i class="fa fa-file fa-3x" ></i>
+						<i class="fa fa-globe" ></i>
 					</div>
+					<?php $query2=mysqli_query($con,"Select * from  tblcity");
+$citycounts=mysqli_num_rows($query2);
+?>
 					<div class="col-md-8 market-update-left">
-					<a href="completed-requests.php" style="color:#fff;"><h5>Food Take Away/ Request Completed </h5></a>
-						<h3><?php echo $completed;?></h3>
+					<h4><a href="manage-city.php" style="color: white">Total City</a></h4>
+						<h3><?php echo $citycounts;?></h3>
+						
 					</div>
 				  <div class="clearfix"> </div>
 				</div>
 			</div>
-		
-			<?php 
-					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId 
- where tblfood.DonorID='$donarid' and (tblfoodrequests.status='Request Rejected')");
-$rejected=mysqli_num_rows($query);
-?>
-			<div class="col-md-4 market-update-left">
-				<div class="market-update-block clr-block-2">
+			
+			<div class="col-md-3 market-update-gd">
+				<div class="market-update-block clr-block-3">
 					<div class="col-md-4 market-update-right">
-						<i class="fa fa-file fa-3x" ></i>
+						<i class="fa fa-user"></i>
 					</div>
+					<?php $query3=mysqli_query($con,"Select * from  tbldonor");
+$donorcounts=mysqli_num_rows($query3);
+?>
 					<div class="col-md-8 market-update-left">
-					<a href="rejected-requests.php"><h4>Rejected Requests </h4></a>
-						<h3><?php echo $rejected;?></h3>
+					<h4><a href="manage-donor-details.php" style="color: white">Total Food Donor</a></h4>
+						<h3><?php echo $donorcounts;?></h3>
+						
 					</div>
 				  <div class="clearfix"> </div>
 				</div>
-			</div>	
+			</div>
+			<div class="market-updates">
+			<div class="col-md-3 market-update-gd">
+				<div class="market-update-block clr-block-2">
+					<div class="col-md-4 market-update-right">
+						<i class="icon-food"> </i>
+					</div>
+					<?php 
+					$query=mysqli_query($con,"Select tblfood.DonorID,tbldonor.ID from  tblfood join tbldonor on  tbldonor.ID=tblfood.DonorID");
+$totallistedfood=mysqli_num_rows($query);
+?>
+					<div class="col-md-8 market-update-left">
+					<h4><a href="all-listed-food.php" style="color: white">Total Listed Food</a></h4>
+						<h3><?php echo $totallistedfood;?></h3>
+						
+					</div>
+				  <div class="clearfix"> </div>
+				</div>
+			</div>
 
-			<?php 
+		   <div class="clearfix"> </div>
+		</div>
+
+
+	<?php 
 					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId 
- where tblfood.DonorID='$donarid' ");
+ join tblfood  on tblfood.ID=tblfoodrequests.foodId");
 $allrequests=mysqli_num_rows($query);
 ?>
 			<div class="col-md-4 market-update-gd" style="margin-top:1%;">
@@ -112,7 +128,7 @@ $allrequests=mysqli_num_rows($query);
 			<?php 
 					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
  join tblfood  on tblfood.ID=tblfoodrequests.foodId 
- where tblfood.DonorID='$donarid' and (tblfoodrequests.status is null || tblfoodrequests.status='')");
+ where   (tblfoodrequests.status is null || tblfoodrequests.status='')");
 $newrequest=mysqli_num_rows($query);
 ?>
 			<div class="col-md-4 market-update-gd" style="margin-top:1%;">
@@ -128,12 +144,87 @@ $newrequest=mysqli_num_rows($query);
 				</div>
 			</div>	
 
-		   <div class="clearfix"> </div>
-		</div>	
-		
+			<?php 
+					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
+ join tblfood  on tblfood.ID=tblfoodrequests.foodId 
+ where  (tblfoodrequests.status='Request Rejected')");
+$rejected=mysqli_num_rows($query);
+?>
+			<div class="col-md-4 market-update-left" style="margin-top:1%;">
+				<div class="market-update-block clr-block-2">
+					<div class="col-md-4 market-update-right">
+						<i class="fa fa-file fa-3x" ></i>
+					</div>
+					<div class="col-md-8 market-update-left">
+					<a href="rejected-requests.php"><h4>Rejected Requests </h4></a>
+						<h3><?php echo $rejected;?></h3>
+					</div>
+				  <div class="clearfix"> </div>
+				</div>
+			</div>	
 
+
+			<?php 
+					$query=mysqli_query($con,"select tblfoodrequests.id from tblfoodrequests
+ join tblfood  on tblfood.ID=tblfoodrequests.foodId 
+ where (tblfoodrequests.status='Food Take Away/ Request Completed')");
+$completed=mysqli_num_rows($query);
+?>
+			<div class="col-md-4 market-update-gd" style="margin-top:1%;">
+				<div class="market-update-block clr-block-1">
+					<div class="col-md-4 market-update-right">
+						<i class="fa fa-file fa-3x" ></i>
+					</div>
+					<div class="col-md-8 market-update-left">
+					<a href="completed-requests.php"><h4>Food Take Away/ Request Completed </h4></a>
+						<h3><?php echo $completed;?></h3>
+					</div>
+				  <div class="clearfix"> </div>
+				</div>
+			</div>
+
+
+		<div class="market-updates">
+           
+		<div class="row">
+			<div class="panel-body">
+				<div class="col-md-12 w3ls-graph">
+
+				</div>
+			</div>
+		</div>
+		<div class="agil-info-calendar">
+		<div class="col-md-6 agile-calendar">
+			
+		</div>
+		<div class="col-md-6 w3agile-notifications">
+			
+			</div>
+			<div class="clearfix"> </div>
+		</div>
+			<div class="agile-last-grids">
+				<div class="col-md-4 agile-last-left">
+					
+				</div>
+				<div class="col-md-4 agile-last-left agile-last-middle">
+					
+				</div>
+				<div class="col-md-4 agile-last-left agile-last-right">
+					
+				</div>
+				<div class="clearfix"> </div>
+			</div>
+		<div class="agileits-w3layouts-stats">
+					<div class="col-md-4 stats-info widget">
+						
+					</div>
+					<div class="col-md-8 stats-info stats-last widget-shadow">
+						
+					</div>
+					<div class="clearfix"> </div>
+				</div>
 </section>
-	<?php include_once('includes/footer.php');?>	
+	<?php include_once('includes/footer.php');?>
 </section>
 </section>
 <script src="js/bootstrap.js"></script>

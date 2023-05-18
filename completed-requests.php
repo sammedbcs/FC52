@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/dbconnection.php');
-if (strlen($_SESSION['pgasoid']==0)) {
+if (strlen($_SESSION['pgasaid']==0)) {
   header('location:logout.php');
   } else{
 
@@ -11,12 +11,11 @@ if (strlen($_SESSION['pgasoid']==0)) {
 
 <!DOCTYPE html>
 <head>
-<title>Food Waste Management System|| New Food Requests</title>
+<title>Food Waste Management System|| Completed Food Requests</title>
 
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 
 <link rel="stylesheet" href="css/bootstrap.min.css" >
-
 <link href="css/style.css" rel='stylesheet' type='text/css' />
 <link href="css/style-responsive.css" rel="stylesheet"/>
 
@@ -65,11 +64,10 @@ if (strlen($_SESSION['pgasoid']==0)) {
         </thead>
         <tbody>
         <?php
-        $donarid=$_SESSION['pgasoid'];
 $ret=mysqli_query($con,"select tblfoodrequests.id as frid,tblfood.ID as foodid,tblfood.FoodItems,tblfoodrequests.requestNumber,tblfoodrequests.fullName,tblfoodrequests.mobileNumber,tblfoodrequests.message,tblfoodrequests.requestDate,tblfoodrequests.status from
 tblfoodrequests
  join tblfood  on tblfood.ID=tblfoodrequests.foodId 
- where tblfood.DonorID='$donarid' and (tblfoodrequests.status='Food Take Away/ Request Completed')");
+ where (tblfoodrequests.status='Food Take Away/ Request Completed')");
 $cnt=1;
 $count=mysqli_num_rows($ret);
 if($count>0){
@@ -101,12 +99,14 @@ $cnt=$cnt+1;
 <?php } ?>  
  </tbody>
             </table>
-         
+            
+            
+          
     </div>
   </div>
 </div>
 </section>
-		 <?php include_once('includes/footer.php');?>  
+		 <?php include_once('includes/footer.php');?> 
 </section>
 </section>
 <script src="js/bootstrap.js"></script>
@@ -114,7 +114,6 @@ $cnt=$cnt+1;
 <script src="js/scripts.js"></script>
 <script src="js/jquery.slimscroll.js"></script>
 <script src="js/jquery.nicescroll.js"></script>
-<script src="js/jquery.scrollTo.js"></script>
 </body>
 </html>
 <?php }  ?>

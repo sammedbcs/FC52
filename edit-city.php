@@ -1,60 +1,46 @@
 <?php
 session_start();
-include('includes/dbconnection.php');
 error_reporting(0);
+include('includes/dbconnection.php');
 if (strlen($_SESSION['pgasaid']==0)) {
   header('location:logout.php');
   } else{
-if(isset($_POST['submit']))
-{
-$adminid=$_SESSION['pgasaid'];
-$cpassword=md5($_POST['currentpassword']);
-$newpassword=md5($_POST['newpassword']);
-$query=mysqli_query($con,"select ID from tbladmin where ID='$adminid' and   Password='$cpassword'");
-$row=mysqli_fetch_array($query);
-if($row>0){
-$ret=mysqli_query($con,"update tbladmin set Password='$newpassword' where ID='$adminid'");
-echo '<script>alert("Your password successully changed.")</script>'; 
-} else {
+    if(isset($_POST['submit']))
+  {
+    $stateid=$_POST['statename'];
+    $eid=$_GET['editid'];
+    $city=$_POST['city'];
+    $query=mysqli_query($con, "update tblcity set StateID='$stateid',City='$city' where ID='$eid'");
+    if ($query) {
+   echo "<script>alert('City has been updated.');</script>";
+echo "<script type='text/javascript'> document.location = 'manage-city.php'; </script>";
+  }
+  else
+    {
+     echo "<script>alert('Something went wrong. Please try again.');</script>";
+    }
 
-echo '<script>alert("Your current password is wrong.")</script>';
+  
 }
-}
-?>
+  ?>
 
 <!DOCTYPE html>
 <head>
-<title>Food Waste Management System|| Change Password  </title>
-
+<title>Food Waste Management System || Update City  </title>
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 
 <link rel="stylesheet" href="css/bootstrap.min.css" >
 <link href="css/style.css" rel='stylesheet' type='text/css' />
 <link href="css/style-responsive.css" rel="stylesheet"/>
-
 <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 
 <link rel="stylesheet" href="css/font.css" type="text/css"/>
 <link href="css/font-awesome.css" rel="stylesheet"> 
 
 <script src="js/jquery2.0.3.min.js"></script>
-<script type="text/javascript">
-function checkpass()
-{
-if(document.changepassword.newpassword.value!=document.changepassword.confirmpassword.value)
-{
-alert('New Password and Confirm Password field does not match');
-document.changepassword.confirmpassword.focus();
-return false;
-}
-return true;
-} 
-
-</script>
 </head>
 <body>
 <section id="container">
-
 <?php include_once('includes/header.php');?>
 <?php include_once('includes/sidebar.php');?>
 <section id="main-content">
@@ -62,10 +48,9 @@ return true;
 		<div class="form-w3layouts">
             <div class="row">
                 <div class="col-lg-12">
-                  
                     <section class="panel">
                         <header class="panel-heading">
-                            Change Password
+                            Update City
                             <span class="tools pull-right">
                                 <a class="fa fa-chevron-down" href="javascript:;"></a>
                                 <a class="fa fa-cog" href="javascript:;"></a>
@@ -74,47 +59,51 @@ return true;
                         </header>
                         <div class="panel-body">
                             <div class="form">
-               <p style="font-size:16px; color:red" align="center"> <?php if($msg){
+                                 <p style="font-size:16px; color:red" align="center"> <?php if($msg){
     echo $msg;
-  }  ?> </p>                  
+  }  ?> </p>
 
-  <?php
-  
-$adminid=$_SESSION['pgasaid'];
-$ret=mysqli_query($con,"select * from tbladmin where ID='$adminid'");
+   
+                                <form class="cmxform form-horizontal " method="post" action="">
+                                   <?php
+ $cid=$_GET['editid'];
+$ret=mysqli_query($con,"select tblcity.ID as ctyid,tblcity.City as cityname,tblstate.StateName as stname,tblstate.ID as stid from tblcity join tblstate on tblstate.id=tblcity.StateID where tblcity.ID='$cid'");
 $cnt=1;
 while ($row=mysqli_fetch_array($ret)) {
-?>
 
-                                <form class="cmxform form-horizontal " method="post" action="" name="changepassword" onsubmit="return checkpass();">
-                                    <div class="form-group ">
-                                        <label for="adminname" class="control-label col-lg-3">Current Password: </label>
+?>
+<div class="form-group ">
+                                        <label for="adminname" class="control-label col-lg-3">State</label>
                                         <div class="col-lg-6">
-                                            <input type="password" name="currentpassword" class=" form-control" required= "true" value="">
+                                             <select name="statename" class="form-control wd-450" required="true" >
+                    <option value="<?php echo $row['stid'];?>"><?php echo $row['stname'];?></option>
+              <?php $query=mysqli_query($con,"select * from tblstate");
+              while($rw=mysqli_fetch_array($query))
+              {
+              ?>      
+                  <option value="<?php echo $rw['ID'];?>"><?php echo $rw['StateName'];?></option>
+                  <?php } ?>
+                  </select>
                                         </div>
                                     </div>
+
                                     <div class="form-group ">
-                                        <label for="lastname" class="control-label col-lg-3">New Password:</label>
+                                        <label for="adminname" class="control-label col-lg-3">City</label>
                                         <div class="col-lg-6">
-                                           <input type="password" name="newpassword" class="form-control" value="">
+                                            <input class=" form-control" id="city" name="city" type="text" required="true" value="<?php  echo $row['cityname'];?>">
                                         </div>
                                     </div>
-                                    <div class="form-group ">
-                                        <label for="username" class="control-label col-lg-3">Confirm Password:</label>
-                                        <div class="col-lg-6">
-                                            <input type="password" name="confirmpassword" class="form-control" value="">
-                                        </div>
-                                    </div>
+                                    
                                    
-                                    <?php } ?>
                                     <div class="form-group">
                                         <div class="col-lg-offset-3 col-lg-6">
-                                          <p style="text-align: center;"> <button class="btn btn-primary" type="submit" name="submit">Change</button></p>
+                                          <p style="text-align: center;"> <button class="btn btn-primary" type="submit" name="submit">Update</button></p>
                                            
                                         </div>
                                     </div>
 
                                 </form>
+                                <?php } ?>
                             </div>
                         </div>
 

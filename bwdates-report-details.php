@@ -11,13 +11,16 @@ if (strlen($_SESSION['pgasaid']==0)) {
 
 <!DOCTYPE html>
 <head>
-<title>Food Waste Management System|| All Food Requests</title>
+<title>Food Waste Management System|| B/w Dates Report Details</title>
 
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+
 <link rel="stylesheet" href="css/bootstrap.min.css" >
 <link href="css/style.css" rel='stylesheet' type='text/css' />
 <link href="css/style-responsive.css" rel="stylesheet"/>
+
 <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
 <link rel="stylesheet" href="css/font.css" type="text/css"/>
 <link href="css/font-awesome.css" rel="stylesheet"> 
 
@@ -25,17 +28,20 @@ if (strlen($_SESSION['pgasaid']==0)) {
 </head>
 <body>
 <section id="container">
-
 <?php include_once('includes/header.php');?>
 <?php include_once('includes/sidebar.php');?>
 <section id="main-content">
 	<section class="wrapper">
 		<div class="table-agile-info">
  <div class="panel panel-default">
-    <div class="panel-heading">
-All Requests 
-    </div>
-    <div>
+    
+    <div><?php $fromdate=$_POST['fromdate'];
+$todate=$_POST['todate'];
+$fdate = date("d-m-Y", strtotime($fromdate));
+$tdate = date("d-m-Y", strtotime($todate));
+?>
+<div class="panel-heading">
+            B/w Dates Report Details From <?php echo $fdate;?> To <?php echo $tdate;?></div>
       <table class="table" ui-jq="footable" ui-options='{
         "paging": {
           "enabled": true
@@ -46,53 +52,53 @@ All Requests
         "sorting": {
           "enabled": true
         }}'>
+        <?php
+$fdate=$_POST['fromdate'];
+$tdate=$_POST['todate'];
+
+?>
         <thead>
           <tr>
             <th data-breakpoints="xs">S.NO</th>
-            <th>Request Id</th>
-            <th>Request By</th>
-            <th>Requester Mobile Number</th>
-            <th>Food Item</th>
+            <th>Food Id</th>
+            <th>Register By</th>
+            <th>Register Mobile Number</th>
+            <th>Contact Person Number</th>
+            <th>Contact Person Mobile Number</th>
+            <th>Food Items</th>
             <th>Request Date</th>
             <th>Status</th>
             <th data-breakpoints="xs">Action</th>
            
+           
           </tr>
         </thead>
-        <tbody>
         <?php
-$ret=mysqli_query($con,"select tblfoodrequests.id as frid,tblfood.ID as foodid,tblfood.FoodItems,tblfoodrequests.requestNumber,tblfoodrequests.fullName,tblfoodrequests.mobileNumber,tblfoodrequests.message,tblfoodrequests.requestDate,tblfoodrequests.status from
-tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId ");
+$ret=mysqli_query($con,"select tblfood.ID,tblfood.foodId,tblfood.ContactPerson,tblfood.CPMobNumber,tblfood.CreationDate,tblfood.FoodItems,tbldonor.FullName,tbldonor.MobileNumber from  tblfood join tbldonor on tblfood.DonorID=tbldonor.ID where date(tblfood.CreationDate) between '$fdate' and '$tdate'");
 $cnt=1;
-$count=mysqli_num_rows($ret);
-if($count>0){
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-        
+        <tbody>
           <tr data-expanded="true">
             <td><?php echo $cnt;?></td>
-              <td><?php  echo $row['requestNumber'];?></td>
-                  <td><?php  echo $row['fullName'];?></td>
-                  <td><?php  echo $row['mobileNumber'];?></td>
+              <td><?php  echo $row['foodId'];?></td>
+                  <td><?php  echo $row['FullName'];?></td>
+                  <td><?php  echo $row['MobileNumber'];?></td>
+                  <td><?php  echo $row['ContactPerson'];?></td>
+                  <td><?php  echo $row['CPMobNumber'];?></td>
                   <td><?php  echo $row['FoodItems'];?></td>
-                  <td><?php  echo $row['requestDate'];?></td>
-                   <?php if($row['status']==""){ ?>
+                  <td><?php  echo $row['CreationDate'];?></td>
+                   <?php if($row['Status']==""){ ?>
 
                      <td class="font-w600"><?php echo "Not Updated Yet"; ?></td>
                      <?php } else { ?>
-                      <td><?php  echo $row['status'];?></td><?php } ?>
-                  <td><a href="view-requestdetails.php?frid=<?php echo $row['frid'];?>">View Details</a></td>
+                      <td><?php  echo $row['Status'];?></td><?php } ?>
+                  <td><a href="view-requestdetails.php?viewid=<?php echo $row['ID'];?>">View Details</a></td>
                 </tr>
                 <?php 
 $cnt=$cnt+1;
-}} else {?>
-<tr>
-  <td colspan="9" style="color:red">No Record Found</td>
-</tr>
-
-<?php } ?>  
+}?>
  </tbody>
             </table>
             
@@ -102,8 +108,9 @@ $cnt=$cnt+1;
   </div>
 </div>
 </section>
-		 <?php include_once('includes/footer.php');?>  
+		 <?php include_once('includes/footer.php');?> 
 </section>
+
 </section>
 <script src="js/bootstrap.js"></script>
 <script src="js/jquery.dcjqaccordion.2.7.js"></script>

@@ -11,13 +11,14 @@ if (strlen($_SESSION['pgasaid']==0)) {
 
 <!DOCTYPE html>
 <head>
-<title>Food Waste Management System|| All Food Requests</title>
-
+<title>Food Waste Management System|| Food Donor Details </title>
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+
 <link rel="stylesheet" href="css/bootstrap.min.css" >
 <link href="css/style.css" rel='stylesheet' type='text/css' />
 <link href="css/style-responsive.css" rel="stylesheet"/>
 <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
 <link rel="stylesheet" href="css/font.css" type="text/css"/>
 <link href="css/font-awesome.css" rel="stylesheet"> 
 
@@ -27,15 +28,22 @@ if (strlen($_SESSION['pgasaid']==0)) {
 <section id="container">
 
 <?php include_once('includes/header.php');?>
+
 <?php include_once('includes/sidebar.php');?>
+
 <section id="main-content">
 	<section class="wrapper">
 		<div class="table-agile-info">
  <div class="panel panel-default">
-    <div class="panel-heading">
-All Requests 
-    </div>
+    
     <div>
+      <?php $fromdate=$_POST['fromdate'];
+$todate=$_POST['todate'];
+$fdate = date("d-m-Y", strtotime($fromdate));
+$tdate = date("d-m-Y", strtotime($todate));
+?>
+<div class="panel-heading">
+           Food Donor B/w Dates Report From <?php echo $fdate;?> To <?php echo $tdate;?></div>
       <table class="table" ui-jq="footable" ui-options='{
         "paging": {
           "enabled": true
@@ -47,52 +55,40 @@ All Requests
           "enabled": true
         }}'>
         <thead>
+           <?php
+$fdate=$_POST['fromdate'];
+$tdate=$_POST['todate'];
+
+?>
           <tr>
             <th data-breakpoints="xs">S.NO</th>
-            <th>Request Id</th>
-            <th>Request By</th>
-            <th>Requester Mobile Number</th>
-            <th>Food Item</th>
-            <th>Request Date</th>
-            <th>Status</th>
-            <th data-breakpoints="xs">Action</th>
-           
+            <th>Full Name</th>
+   <th>Mobile Number</th>
+   <th>Email</th>
+            <th>Registration Date</th>
+          
           </tr>
         </thead>
-        <tbody>
         <?php
-$ret=mysqli_query($con,"select tblfoodrequests.id as frid,tblfood.ID as foodid,tblfood.FoodItems,tblfoodrequests.requestNumber,tblfoodrequests.fullName,tblfoodrequests.mobileNumber,tblfoodrequests.message,tblfoodrequests.requestDate,tblfoodrequests.status from
-tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId ");
+$ret=mysqli_query($con,"select * from  tbldonor where 
+  date(tbldonor.RegDate) between '$fdate' and '$tdate'");
 $cnt=1;
-$count=mysqli_num_rows($ret);
-if($count>0){
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-        
+        <tbody>
           <tr data-expanded="true">
             <td><?php echo $cnt;?></td>
-              <td><?php  echo $row['requestNumber'];?></td>
-                  <td><?php  echo $row['fullName'];?></td>
-                  <td><?php  echo $row['mobileNumber'];?></td>
-                  <td><?php  echo $row['FoodItems'];?></td>
-                  <td><?php  echo $row['requestDate'];?></td>
-                   <?php if($row['status']==""){ ?>
-
-                     <td class="font-w600"><?php echo "Not Updated Yet"; ?></td>
-                     <?php } else { ?>
-                      <td><?php  echo $row['status'];?></td><?php } ?>
-                  <td><a href="view-requestdetails.php?frid=<?php echo $row['frid'];?>">View Details</a></td>
+              
+                  <td><?php  echo $row['FullName'];?></td>
+                 <td><?php  echo $row['MobileNumber'];?></td>
+                 <td><?php  echo $row['Email'];?></td>
+                  <td><?php  echo $row['RegDate'];?></td>
+                 
                 </tr>
                 <?php 
 $cnt=$cnt+1;
-}} else {?>
-<tr>
-  <td colspan="9" style="color:red">No Record Found</td>
-</tr>
-
-<?php } ?>  
+}?>
  </tbody>
             </table>
             

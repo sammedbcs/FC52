@@ -11,7 +11,7 @@ if (strlen($_SESSION['pgasaid']==0)) {
 
 <!DOCTYPE html>
 <head>
-<title>Food Waste Management System|| All Food Requests</title>
+<title>Food Waste Management System|| All Listed Food Requests</title>
 
 <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
 <link rel="stylesheet" href="css/bootstrap.min.css" >
@@ -20,12 +20,10 @@ if (strlen($_SESSION['pgasaid']==0)) {
 <link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="css/font.css" type="text/css"/>
 <link href="css/font-awesome.css" rel="stylesheet"> 
-
 <script src="js/jquery2.0.3.min.js"></script>
 </head>
 <body>
 <section id="container">
-
 <?php include_once('includes/header.php');?>
 <?php include_once('includes/sidebar.php');?>
 <section id="main-content">
@@ -33,7 +31,7 @@ if (strlen($_SESSION['pgasaid']==0)) {
 		<div class="table-agile-info">
  <div class="panel panel-default">
     <div class="panel-heading">
-All Requests 
+     All Listed Food Requests
     </div>
     <div>
       <table class="table" ui-jq="footable" ui-options='{
@@ -49,60 +47,49 @@ All Requests
         <thead>
           <tr>
             <th data-breakpoints="xs">S.NO</th>
-            <th>Request Id</th>
-            <th>Request By</th>
-            <th>Requester Mobile Number</th>
-            <th>Food Item</th>
+            <th>Food Id</th>
+            <th>Register By</th>
+            <th>Register Mobile Number</th>
+            <th>Contact Person Number</th>
+            <th>Contact Person Mobile Number</th>
+            <th>Food Items</th>
             <th>Request Date</th>
-            <th>Status</th>
             <th data-breakpoints="xs">Action</th>
+           
            
           </tr>
         </thead>
-        <tbody>
         <?php
-$ret=mysqli_query($con,"select tblfoodrequests.id as frid,tblfood.ID as foodid,tblfood.FoodItems,tblfoodrequests.requestNumber,tblfoodrequests.fullName,tblfoodrequests.mobileNumber,tblfoodrequests.message,tblfoodrequests.requestDate,tblfoodrequests.status from
-tblfoodrequests
- join tblfood  on tblfood.ID=tblfoodrequests.foodId ");
+        $oid=$_SESSION['pgasoid'];
+$ret=mysqli_query($con,"select tblfood.ID,tblfood.foodId,tblfood.ContactPerson,tblfood.CPMobNumber,tblfood.CreationDate,tblfood.FoodItems,tbldonor.FullName,tbldonor.MobileNumber from  tblfood join tbldonor on tblfood.DonorID=tbldonor.ID");
 $cnt=1;
-$count=mysqli_num_rows($ret);
-if($count>0){
 while ($row=mysqli_fetch_array($ret)) {
 
 ?>
-        
+        <tbody>
           <tr data-expanded="true">
             <td><?php echo $cnt;?></td>
-              <td><?php  echo $row['requestNumber'];?></td>
-                  <td><?php  echo $row['fullName'];?></td>
-                  <td><?php  echo $row['mobileNumber'];?></td>
+              <td><?php  echo $row['foodId'];?></td>
+                  <td><?php  echo $row['FullName'];?></td>
+                  <td><?php  echo $row['MobileNumber'];?></td>
+                  <td><?php  echo $row['ContactPerson'];?></td>
+                  <td><?php  echo $row['CPMobNumber'];?></td>
                   <td><?php  echo $row['FoodItems'];?></td>
-                  <td><?php  echo $row['requestDate'];?></td>
-                   <?php if($row['status']==""){ ?>
-
-                     <td class="font-w600"><?php echo "Not Updated Yet"; ?></td>
-                     <?php } else { ?>
-                      <td><?php  echo $row['status'];?></td><?php } ?>
-                  <td><a href="view-requestdetails.php?frid=<?php echo $row['frid'];?>">View Details</a></td>
+                  <td><?php  echo $row['CreationDate'];?></td>
+             
+                  <td><a href="food-details.php?viewid=<?php echo $row['ID'];?>">View Details</a></td>
                 </tr>
                 <?php 
 $cnt=$cnt+1;
-}} else {?>
-<tr>
-  <td colspan="9" style="color:red">No Record Found</td>
-</tr>
-
-<?php } ?>  
+}?>
  </tbody>
             </table>
-            
-            
           
     </div>
   </div>
 </div>
 </section>
-		 <?php include_once('includes/footer.php');?>  
+		 <?php include_once('includes/footer.php');?>
 </section>
 </section>
 <script src="js/bootstrap.js"></script>
